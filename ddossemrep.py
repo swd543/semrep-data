@@ -30,7 +30,7 @@ url='https://ii.nlm.nih.gov/cgi-bin/II/Interactive/UTS_Required/interactiveLocal
 for index, uniquetext in enumerate(dictionary.values()):
     shutil.copyfile('temp/hashdump.pkl', 'temp/hashdump2.pkl')
     print('Semrepping',index,'of',lenDictionary,'(',index*100/lenDictionary,'% )')
-    if uniquetext['size']>1000: continue
+    # if uniquetext['size']>1000: continue
     if 'semrep' in uniquetext.keys(): continue
     print('Semrepping the data for rows',uniquetext)
     text=locateText(uniquetext)

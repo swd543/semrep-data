@@ -4,9 +4,13 @@ import pickle
 import atexit
 import os
 
+# This program is used for splitting the dictionary to be processed in parallel
+# 1000 entries will be split in 8 files, which will each contain 125 entries
+# To fill up the data, run concurrentddossemrep.py x 8
+# To combine the split data, run combiner.py
 import argparse
 parser = argparse.ArgumentParser(description='Super secret task.')
-parser.add_argument("-n", "--numberoffiles", help="Number of files to split in", default=8, type=int)
+parser.add_argument("-n", "--numberoffiles", help="Number of files to split in", default=1, type=int)
 args = parser.parse_args()
 
 with(open('a.lock', 'w')):

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+# This program is used for combining the split-processed semrep dictionary into one big dictionary
 import pickle
 import os
 import debughash
@@ -16,6 +17,11 @@ for filename in os.listdir('parallel'):
     for key, value in newDict.items():
         assert key in dictionary.keys()
         dictionary[key]['semrep']=value['semrep']
+
+import shutil
+shutil.copyfile('temp/hashdump.pkl', 'temp/hashdump2.pkl')
+with open('temp/hashdump.pkl', 'wb') as f:
+    pickle.dump(dictionary, f)
 
 newDict = dict(filter(lambda e: 'semrep' in e[1].keys(), dictionary.items()))
 a=len(newDict)

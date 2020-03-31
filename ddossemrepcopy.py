@@ -32,26 +32,32 @@ def process(inputfile='temp/hashdump.pkl', cookie='_ga=GA1.2.2064073637.15853189
     for index, uniquetext in enumerate(dictionary.values()):
         shutil.copyfile(inputfile, '{0}.2'.format(inputfile))
         print('Semrepping',index,'of',lenDictionary,'(',index*100/lenDictionary,'% )')
-        if uniquetext['size']>1000: continue
+        if uniquetext['size']>5800: continue
         if 'semrep' in uniquetext.keys(): continue
-        print('Semrepping the data for rows',uniquetext)
+        print('Semrepping the data for rows',uniquetext)            
         text=locateText(uniquetext)
-        r=requests.post(url=url, 
-        headers={'Cookie':cookie},
-        data={
-            'RUN_PROG':'SEMREP',
-            'InputText':text,
-            'KSource':2015,
-            'LXY':2015})
-        response=r.content.strip()
-        cleanedResponse=clean(response)
-        hashOfResponse=hasher.hashify(text)
-        assert hashOfResponse in dictionary.keys(), 'Hash of response was not found in dictionary?!'
-        dictionary[hashOfResponse]['semrep']=cleanedResponse
-        print('Dumping response for',dictionary[hashOfResponse])
-        with open(inputfile, 'wb') as f:
-            pickle.dump(dictionary, f)
-
+        while True:
+            try:
+                with requests.post(url=url, 
+                    headers={'Cookie':cookie, 'Connection':'keep-alive'},
+                    data={
+                        'RUN_PROG':'SEMREP',
+                        'InputText':text,
+                        'KSource':2015,
+                        'LXY':2015},
+                    stream=True, timeout=3600) as r:
+                    response=r.content.strip()
+                    cleanedResponse=clean(response)
+                    hashOfResponse=hasher.hashify(text)
+                    assert hashOfResponse in dictionary.keys(), 'Hash of response was not found in dictionary?!'
+                    dictionary[hashOfResponse]['semrep']=cleanedResponse
+                    print('Dumping response for',dictionary[hashOfResponse])
+                    with open(inputfile, 'wb') as f:
+                        pickle.dump(dictionary, f)
+            except requests.exceptions.ChunkedEncodingError as error:
+                print("OS error: {0}, retrying!".format(error))
+            else:
+                break
 
 if __name__ == "__main__":
     process()

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
+# This is to verify whether our dictionary is valid
 import pickle
-
 def verifyHash(accuracy=0.1, filename='temp/hashdump.pkl'):
     with open(filename, 'rb') as f:
         dictionary_of_unique_text_entries=pickle.load(f)

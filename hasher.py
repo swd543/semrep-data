@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+# This program is used for hashing the paragraph
 import pandas as pd
 data=pd.read_csv('XMLProduct_DBID_2/XMLProduct_DBID_2.csv')
 # print(data)

@@ -1,0 +1,214 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix gn: <http://geonames.org/> .
+@prefix wb: <http://worldbank.org/> .
+@prefix sc: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@base <http://geonames.org/> .
+
+
+<TriplesMapGeonames>
+  a rr:TriplesMap;
+
+  # Define the data source (file location)
+  rml:logicalSource [
+    rml:source "dataset-geonames-countryInfo.csv";
+    rml:referenceFormulation ql:CSV
+  ];
+
+  # Define the subject of the generated statements
+  rr:subjectMap [ rr:template "http://geonames.org/country/{ISO}" ;
+    rr:class gn:Country ];
+
+  # Map the country name to rdfs:label
+  rr:predicateObjectMap [ 
+    rr:predicate rdfs:label ;
+    rr:objectMap [ rml:reference "Country" ]
+  ] ;
+
+  # Define the object of the ISO-Numeric as an integer
+  rr:predicateObjectMap [ 
+    rr:predicate gn:isoNumeric ; 
+    rr:objectMap [ rml:reference "ISO-Numeric" ; rr:datatype xsd:integer ]
+  ] ;
+  
+  # Generate a URI for the continent object
+  rr:predicateObjectMap [ 
+    rr:predicate gn:continent ;
+    rr:objectMap [ rr:template "http://geonames.org/continent/{Continent}" ]
+  ] ;
+
+  # Define the object of the population property as an integer
+  rr:predicateObjectMap [ 
+    rr:predicate gn:population ;
+    rr:objectMap [ rml:reference "Population" ; rr:datatype xsd:integer ]
+  ] ;
+
+  # Define the object of the Capital
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:capital ;
+    rr:objectMap [ rml:reference "Capital" ; rr:language "en" ]
+  ] ;
+
+  # Define the object of the geonameid as an integer
+  rr:predicateObjectMap [ 
+    rr:predicate gn:geonamesID ;
+    rr:objectMap [ rml:reference "geonameid" ; rr:datatype xsd:integer ]
+  ] ;
+
+  # Define the object of the Area 
+  rr:predicateObjectMap [ 
+    rr:predicate gn:area ;
+    rr:objectMap [ rml:reference "Area" ; rr:datatype xsd:decimal ]
+  ] ;
+
+  # Define the object of the Postal code regex
+  rr:predicateObjectMap [ 
+    rr:predicate gn:postalCodeRegex ;
+    rr:objectMap [rml:reference "Postal Code Regex" ]
+  ] ;
+
+# Define the object of the currency name
+  rr:predicateObjectMap [ 
+    rr:predicate gn:currencyName ;
+    rr:objectMap [ rml:reference "CurrencyName"]
+  ] ;
+
+  # Define the object of the currency code
+  rr:predicateObjectMap [ 
+    rr:predicate sc:currency ;
+    rr:objectMap [ rml:reference "CurrencyCode" ]
+  ] ;
+  
+# Generate a URI for the object of the phone
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:phonePrefix ;
+    rr:objectMap [ rml:reference "Phone" ]
+  ] ;
+
+  # Define the object of the EquivalentFipsCode
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:fipsCode ;
+    rr:objectMap [ rml:reference "EquivalentFipsCode" ]
+  ] ;
+
+  # Define the object of the tld
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:topLevelDomain;
+    rr:objectMap [ rml:reference "tld" ; rr:language "en"]
+  ];
+
+  # Define the object for Languages
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:iso6392Code;
+    rr:objectMap [ rml:reference "Languages" ; rr:language "en"]
+  ];
+  
+  # Define the object for the neighbours object
+  rr:predicateObjectMap [ 
+    rr:predicate gn:neighbour ;
+    rr:objectMap [ rml:reference "neighbours" ]
+  ] ;
+
+  # Define the object for PostalCode
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:postalCode ;
+    rr:objectMap [ rml:reference "Postal Code Format" ]
+  ] .
+
+# Generates Continent as class 
+
+<TriplesMapContinents>
+  a rr:TriplesMap;
+
+  # Define the data source (file location)
+  rml:logicalSource [
+    rml:source "dataset-geonames-countryInfo.csv";
+    rml:referenceFormulation ql:CSV
+  ];
+
+  # Define the subject of the generated statements
+  rr:subjectMap [ rr:template "http://geonames.org/continent/{Continent}" ;
+    rr:class gn:Continent];
+
+    # Map the country name to rdfs:label
+  rr:predicateObjectMap [ 
+    rr:predicate dbo:country ;
+    rr:objectMap [ rml:reference "Country" ]
+  ] .
+
+
+# Generates GDP entries yearly for each country from WorldBank data
+
+<TriplesMapGdpEntries> 
+  a rr:TriplesMap;
+
+  rml:logicalSource [
+    rml:source "dataset-worldbank-gdp-full.xml";
+    rml:referenceFormulation ql:XPath ;
+    rml:iterator "/Root/data/record"
+  ];
+
+  # Generate a URI for each GDP yearly entry, for each country
+  rr:subjectMap [ rr:template "http://worldbank.org/country/{country/@key}/gdp/{year}" ;
+    rr:class wb:GdpEntry ];
+
+  # Add the country label to the GDP entry
+  rr:predicateObjectMap [ 
+    rr:predicate wb:country_label ;
+    rr:objectMap [ rml:reference "country" ]
+  ] ;
+
+  # Add the value to the GDP entry
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:value ;
+    rr:objectMap [ rml:reference "value" ; rr:datatype xsd:float ]
+  ];
+
+  # Add the year to the GDP entry
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:year ;
+    rr:objectMap [ rml:reference "year" ; rr:datatype xsd:integer ]
+  ].
+
+# Generates Country as class from WorldBank data
+
+<TriplesMapCountry> 
+  a rr:TriplesMap;
+
+  rml:logicalSource [
+    rml:source "dataset-worldbank-gdp-full.xml";
+    rml:referenceFormulation ql:XPath ;
+    rml:iterator "/Root/data/record"
+  ];
+
+  # Generate a URI for Country
+  rr:subjectMap [ rr:template"http://worldbank.org/{country/@key}/country/{country}" ;
+    rr:class wb:country];
+  
+ # Add the country label to the GDP entry
+  rr:predicateObjectMap [ 
+    rr:predicate wb:country_label ;
+    rr:objectMap [ rml:reference "country" ]
+  ] ;
+
+ # Add the value to the continent
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:value ;
+    rr:objectMap [ rml:reference "value" ; rr:datatype xsd:float ]
+  ];
+
+  # Add the year to the Continent 
+  rr:predicateObjectMap [ 
+    rr:predicate rdf:year ;
+    rr:objectMap [ rml:reference "year" ; rr:datatype xsd:integer ]
+  ].
+
+
