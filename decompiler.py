@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
-# This program is used for creating a CSV for each semrep output text in the dictionary
+# This program is used for creating a CSV for each semrep output text in the dictionary,
+# and then creating a turtle file for the mapping, with the hash.
+# After that the mapping is run on the generated CSV and the quads are output.
 import debughash
 
 from io import StringIO

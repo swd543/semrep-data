@@ -19,9 +19,14 @@ https://www.ncbi.nlm.nih.gov/books/NBK9685/pdf/Bookshelf_NBK9685.pdf
 - [x] Verify if our dictionary is consistent and valid (debughash.py)
 - [x] view generated pickle dictionary (viewpickle.py)
 - [x] Generate CSV for each semrep output in dictionary (decompiler.py)
+- [x] Generate mapping file for each semrep output (decompiler.py)
+- [x] Generate rdfs for each semrep text (decompiler.py)
+
+# Input files
+- The provided CSV file is in (./XMLProduct_DBID_2/XMLProduct_DBID_2.csv)
 
 # Generated files
 - The most important data is (./temp/hashdump.pkl). This holds the filled dictionary in python pickle format!
 - After running (decompiler.py), the generated csv are outputted to (./mapping/input/input{hash}.csv)
 - Mapping files are located at (./mapping/myfirstmapping.ttl) (drug-active ingredient) and (./mapping/mapmeta.ttl) (semrep)
-- Outputted nt files are located at (./mapping/m.nt) (semrep) and (./mapping/o.nt) (drug-active ingredients)
+- Outputted nt files are located at (./mapping/mf.nt) (semrep) and (./mapping/o.nt) (drug-active ingredients)

@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# This program adds a hash of the text column to the original CSV file
+
 # Verify integrity of loaded pickle
 import debughash
 dictionary,data=debughash.verifyHash(0.001)
